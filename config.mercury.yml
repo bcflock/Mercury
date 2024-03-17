@@ -1,0 +1,113 @@
+Environment:
+  Database: Quickclass
+Functions:
+    UpdateProfile:
+        Method: 
+            - POST
+        #Options:
+            #If exists, do you keep the existing files or overwrite them
+        #    Overwrite: True|False 
+        #where the data resides in the json; 
+        DataRoot: 'editProfile'
+        # default table is used if there is no table override
+        Tables:
+            Profile:
+                Name: quickclass.profile
+                Alias: p
+                Default: true   
+        Parameters: 
+            ProfileID:
+                Type: 
+                    Integer:
+                        Bounds:
+                            Lower: 0 #Lower Bound for an integer type
+                            Upper: 100_000 #Upper Bound for an integer type
+                            OnFail:
+                                Code: 400
+                                Message: Out of Bounds
+                    OnFail: #If typecasting fails
+                        Code: 400
+                        Message: Uh Oh
+                Source: 
+                    URL:
+                        Pattern: /profile/(\d+)
+                        Value: \1
+                #Column?: userId 
+                Identifier: True #Variable will be used in the WHERE clause
+            FirstName:
+                Type: 
+                    String:
+                        Pattern: 
+                            Expression: ~
+                            OnFail:
+                                Code: 400
+                                Message: String must match pattern
+                        Length: 
+                            Lower: 0
+                            Upper: 60
+                            OnFail:
+                                Code: 400
+                                Message: Uh oh
+                Source: 
+                    Payload:
+                        Path: fname #expands to editProfile.fname, which is then used to get the value from the json
+                        DataRoot: false #exclude data root from the path
+                Column: fname 
+            
+            #So with this entry, since the key is equal to the column name
+            # and ${dataroot}.${key} is also equal to the path in the json, 
+            # we only need to specify the type
+            LastName: 
+                #I believe we can omit Pattern and Length so long as we just have the type
+                Type: 
+                    String:
+                Column: lname
+            profilePicture:
+                Type: 
+                    String:
+                #Here, we may omit the column name because profilePicture is the name of the column
+            personalWebsiteUrl:
+                Type: 
+                    String:
+                # Default Patterns will be 
+                #   - URL
+                #   - Email
+                # These will use overly broad regular expressions
+                # If you need a custom regular expression, delimit it
+                # as /foo/
+                        Pattern: 
+                            Default: URL
+                            OnFail: #If the pattern match fails
+                                Code: ~
+                                Message: ~
+            mediumUrl:
+                Type: 
+                    String:
+                        Pattern: URL
+
+        #mercury::expand::tables
+        #mercury::expand::parameters::update is a function that takes the parameters 
+        # and automatically sets up the 
+
+        Query: 
+            Type: INSERT
+            #|INSERT|UPDATE
+            #Override: #Override if the default generated Query isn't good enough for you
+            #    |
+            #    UPDATE 
+            #        {mercury::query::tables} 
+            #    SET 
+            #        {mercury::query::update::parameters}
+            #    WHERE
+            #       {mercury::query::identifier}
+            
+        # this is equivalent to the following Query
+        # UPDATE 
+        #   quickclass.profile p
+        # SET
+        #   p.profilePicture = '${profilePicture}',
+        #   p.personalWebsiteUrl = '${personalWebsiteUrl}',
+        #   p.lname = '${LastName}',
+        #   p.fname = '${FirstName}',
+        # WHERE
+        #   p.userId = '${ProfileId}'

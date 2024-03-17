@@ -1,0 +1,5 @@
+template/
+!template/README
+mercury/__pycache__/
+mercury/engines/__pycache__/
+test/
