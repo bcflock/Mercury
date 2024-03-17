@@ -1,11 +1,8 @@
 import mercury.config_parser as config_parser
 import re
 #TODO: This is not a real solution
-def transform(model, template=None):
-    return ([
-        FunctionTransformer(f).transform(template)
-        for f in model.Functions
-        ])
+def transform(func, template=None):
+    return FunctionTransformer(func).transform(template)
 expr = {
         'parameters': {
             'declare'  : re.compile(r"([\t\s]*){mercury::parameters::declare}"),

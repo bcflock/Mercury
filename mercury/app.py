@@ -17,8 +17,6 @@ class _TemplateFile:
         self.engine = engine.get_engine_from_ext(self.extension)
 
         self.fdir = fdir
-    #    print(f'File extension = {self.extension}')
-    #    print(f'Dir = {self.fdir}')
         with open(f'{self.fdir}/{self.filename}', 'r') as f:
             self.content = f.read()
         match = re.match(r'^(.*)\.mercury'+f'\\{self.extension}$', str(filename))
@@ -51,13 +49,14 @@ class _MercuryFiles:
             """
         #print(model)
         
+        
         #folders = [f.Name for f in model.Functions]
-        folders = ['test']
-        for fname in folders:
+        for func in model.Functions:
+            fname = func.Name
             os.makedirs(f'./{fname}', exist_ok=True )
             for template in self.template_files:
                 with open(f'{fname}/{template.outputname}', 'w+') as f:
-                    f.writelines(template.engine.apply(model, template.content))
+                    f.write(template.engine.apply(func, template.content))
                     #f.write(template.engine.apply(model))
             for static in self.static_files:
                 with open(f'{fname}/{static.filename}', 'w+') as f:

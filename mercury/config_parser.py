@@ -56,6 +56,7 @@ class _Query:
         print("Override:",Override)
         if not Type and not Override:
            raise ValueError 
+        Type = Type.upper()
         if Type:
             print(Type)
             if Type == "SELECT":
