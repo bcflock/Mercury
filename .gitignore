@@ -1,5 +1,10 @@
-template/
+template/*
 !template/README
+!template/example.mercury.py
+!template/static.py
 mercury/__pycache__/
 mercury/engines/__pycache__/
 test/
+
+UpdateProfile/
+AddProfile/

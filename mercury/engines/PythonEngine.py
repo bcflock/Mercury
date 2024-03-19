@@ -1,8 +1,5 @@
 import mercury.config_parser as config_parser
 import re
-#TODO: This is not a real solution
-def transform(func, template=None):
-    return FunctionTransformer(func).transform(template)
 expr = {
         'parameters': {
             'declare'  : re.compile(r"([\t\s]*){mercury::parameters::declare}"),
@@ -24,6 +21,10 @@ expr = {
             'tables': re.compile(r"{mercury::query::tables}")
         },
     }
+
+def transform(func, template=None):
+    return FunctionTransformer(func).transform(template)
+
 class FunctionTransformer:
     def __init__(self, Function, TabLevel = 1, TabWidth = 4):
         self.Function = Function
@@ -71,7 +72,7 @@ class ParameterDeclaration:
         return f'''{' '*self.TabWidth*self.TabLevel}{Parameter.Key} = {self.SourceToString(Parameter.Source)}'''
     def SourceToString(self, source: config_parser._Source):
         if source == None:
-            return f'event.{self.DataRoot}.{self.Parameter.Key}'
+            return f'payload.{self.DataRoot}.{self.Parameter.Key}'
         if source.type == "URL":
             return self.URLSourceToString(source.source)
         if source.type == "Payload":
@@ -79,7 +80,7 @@ class ParameterDeclaration:
 
     def PayloadSourceToString(self, Payload: config_parser._Payload):
         DataRoot = f'{self.DataRoot}.' if Payload.UseDataRoot else ""
-        return f'''event.{DataRoot}{Payload.Path}'''
+        return f'''payload.{DataRoot}{Payload.Path}'''
     
     def URLSourceToString(self, URL:config_parser._URL):
         return f'''re.sub('{URL.Pattern}', r'{URL.Value}', payload.path)'''
