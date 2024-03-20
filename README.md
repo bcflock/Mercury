@@ -20,7 +20,7 @@ Let's say you have a file called `app.py`, and you want to make it into a templa
 There are a few important commands for creating a template. Each of these are inserted into the document on a separate line; when that line is encountered, Mercury converts that line into a generated codeblock
 
 - **{mercury::parameters::declare}**: This command will insert parameter initializations and assignments.
-- **{mercury::parameters::validate}** This command applies constraints to the parameters. Make sure to put this line below {mercury::parameters::declare}**
+- **{mercury::parameters::validate}** This command applies constraints to the parameters. Make sure to put this line below **{mercury::parameters::declare}**
 - **{mercury::imports}** This should be placed at the top of the file, and will import any code necessary for the generated code to run. These are based on assumptions contained within the generated code. 
 - **{mercury::query::declare}** This command will create a variable called Query. This variable will store the query to execute, though execution is done separately and is not handled by Mercury at this time.
 
