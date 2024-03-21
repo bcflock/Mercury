@@ -1,10 +1,16 @@
 
+from mercury.logger.DebugLogger import DebugLogger
+
+_logger = DebugLogger(__file__)
 
 
 
 class _StaticFile:
-    def __init__(self, fdir, filename, outputdir="output"):
-        print("mercury.app - _StaticFile.init() with: ", "\n  fdir: ", fdir, "\n  filename: ", filename)
+    def __init__(self, fdir, filename, outputdir="output"):        
+        _logger.log(msg="Initalizing", 
+                    fname="_StaticFile.init()",
+                    kwargs={"fdir":fdir, "filename": filename})
+
         self.fdir = fdir
         self.filename = filename
         self.outputdir = outputdir

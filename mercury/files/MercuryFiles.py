@@ -2,6 +2,10 @@ import os
 
 from mercury.config_parser.DataTypes.Model import Model
 
+from mercury.logger.DebugLogger import DebugLogger
+
+_logger = DebugLogger(__file__)
+
 
 class _MercuryFiles:
 
@@ -16,7 +20,9 @@ class _MercuryFiles:
         Args:
             config (_type_): _description_
             """
-        print("\n\nmercury.app - _MercuryFiles.apply_config() entered with: \n  model: ",model)
+        _logger.log(msg="Apply Config", 
+                    fname="_MercuryFiles.apply_config()",
+                    kwargs={"model": model})
         #folders = [f.Name for f in model.Functions]
         os.makedirs(f'./{outputdir}', exist_ok=True )
         for func in model.Functions:
@@ -29,6 +35,8 @@ class _MercuryFiles:
             for static in self.static_files:
                 with open(f'{outputdir}/{fname}/{static.filename}', 'w+') as f:
                     static.write(fname)
-            print("mercury.app - _MercuryFiles.apply_config()  finished writing function: ", func)
 
+            _logger.log(msg="Finished Function", 
+                        fname="_MercuryFiles.apply_config()",
+                        kwargs={"func": func})
             

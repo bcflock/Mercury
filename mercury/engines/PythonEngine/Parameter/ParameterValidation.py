@@ -5,25 +5,34 @@ from mercury.config_parser.DataTypes.Types import _Parameter, _Integer, _String,
 
 from mercury.config_parser.Handlers.Handlers import _OnFail
 
+from mercury.logger.DebugLogger import DebugLogger
+
+_logger = DebugLogger(__file__)
+
 
 class ParameterValidation:
     def __init__(self, TabLevel=1, TabWidth=4):
-        print("mercury.engines.PythonEngine - ParameterValidation.init() with: ", "\n  TabLevel: ", TabLevel, "\n  TabWidth: ", TabWidth)
+        _logger.log(msg="Initalizing", fname="ParameterValidation.init()",
+                    kwargs={"TabLevel": TabLevel, "TabWidth": TabWidth})
+
         self.content = ""
         self.TabLevel = TabLevel
         self.TabWidth = TabWidth
+
     def validate(self, Parameter: _Parameter):
         self.Parameter = Parameter 
         self.Name : str = self.Parameter.Key
         self.Type : _Type= self.Parameter.Type
         return self.validateType()
+    
     def validateType(self):
-        print('validating')
+        _logger.log(msg="Validating Type", fname="ParameterValidation.validateType()")
         if isinstance(self.Type.Type, _Integer):
             return self.validateInt()
         elif isinstance(self.Type.Type, _String):
             return self.validateString()
         else: return ""
+
     def fail(self, failure: _OnFail):
         return f'{" "*self.TabLevel*self.TabWidth}'\
             +'return {"statusCode": '\
@@ -31,8 +40,11 @@ class ParameterValidation:
             + ', "body": {"message": ' \
             + f'"{failure.Message}"' \
             + '}}'
+    
+    
     def validateInt(self):
-        print(self.Type.Type.ValidationFail) 
+        _logger.log(msg="Validating Integer", fname="ParameterValidation.validateInt()")
+
         return f'\n{" "*self.TabWidth*self.TabLevel}' + f'\n{" "*self.TabWidth*self.TabLevel}'.join([
             f'try:',
             f'{" "*self.TabWidth*self.TabLevel}{self.Name} = int({self.Name})',
@@ -41,8 +53,11 @@ class ParameterValidation:
             f'if not {self.Type.Type.Lower} < {self.Name} < {self.Type.Type.Upper}:',
             self.fail(self.Type.Type.ValidationFail),
         ])
+    
+
     def validateString(self):
-        print(self.Type.Type.LengthFail)
+        _logger.log(msg="Validating String", fname="ParameterValidation.validateString()")
+
         return f'\n{" "*self.TabWidth*self.TabLevel}' + \
             f'\n{" "*self.TabWidth*self.TabLevel}'.join([
                 f'if not {self.Type.Type.Lower} < len({self.Name}) < {self.Type.Type.Upper}:',

@@ -1,9 +1,15 @@
 
 
+from mercury.logger.DebugLogger import DebugLogger
+
+_logger = DebugLogger(__file__)
+
 
 class _Table:
     def __init__(self, Key, Name, Alias, Default = False):
-        print("mercury.config_parser - _Table.init() with: ", "\n  Key: ", Key, "\n  Name: ", Name, "\n  Alias: ", Alias, "\n  Default: ", Default)
+        _logger.log(msg="Initalizing", fname="_Table.init()",
+                    kwargs={"Key":Key, "Name": Name, "Alias": Alias, "Default": Default})
+
         self.Key = Key
         self.Name = Name
         self.Alias = Alias

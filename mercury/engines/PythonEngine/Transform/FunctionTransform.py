@@ -4,9 +4,14 @@ from mercury.engines.PythonEngine.Parameter.ParameterDeclaration import Paramete
 from mercury.engines.PythonEngine.Parameter.ParameterValidation import ParameterValidation
 from mercury.engines.PythonEngine.Query.QueryCreation import QueryCreation
 
+from mercury.logger.DebugLogger import DebugLogger
+
+_logger = DebugLogger(__file__)
+
 class FunctionTransformer:
     def __init__(self, Function, TabLevel = 1, TabWidth = 4):
-        print("mercury.engines.PythonEngine - FunctionTransformer.init() with: ", "\n  Function: ", Function, "\n  TabLevel: ", TabLevel, "\n  TabWidth: ", TabWidth)
+        _logger.log(msg="Initalizing", fname="FunctionTransformer.init()",
+                    kwargs={"Function":Function,"TabLevel": TabLevel, "TabWidth": TabWidth})
         self.Function = Function
         self.Parameters = Function.Parameters
         self.Tables = Function.Tables

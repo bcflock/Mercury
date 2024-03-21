@@ -11,10 +11,16 @@ from mercury.files.StaticFile import _StaticFile
 
 from mercury.config_parser.config_parser import ConfigParser
 
+
+from mercury.logger.DebugLogger import DebugLogger
+
+_logger = DebugLogger(__file__)
+
+
 class Mercury():
 
     def __init__( self, config, templatedir, outputdir="output"):
-        print("mercury.app - Mercury.init() with: ", "\n  config: ", config, "\n  templatedir: ", templatedir)
+        _logger.log(msg="Started", fname="Mercury.init()",kwargs={"config":config, "templatedir": templatedir})
         self.config = config
         self.templatedir = templatedir
         self.outputdir = outputdir
@@ -24,8 +30,8 @@ class Mercury():
         static = []
         template = []
         walk = p.iterdir() 
-        for file in walk:
-            print("mercury.app - Mercury.locate_files() Processing File:  ", file, "\n  file.name: ", file.name)
+        for file in walk:   
+            _logger.log(msg="Processing File", fname="Mercury.locate_files()",kwargs={"file":file, "file.name": file.name})
             fpath = pathlib.Path(f'{file}')
             if str(fpath) == self.config: continue
             suff = fpath.suffixes
@@ -33,7 +39,8 @@ class Mercury():
                 template.append(_TemplateFile(self.templatedir, file.name))
             else:
                 static.append(_StaticFile(self.templatedir, file.name))
-        print("mercury.app - Mercury.locate_files() finished with","\n  template: ", template, "\n  static: ", static)
+        _logger.log(msg="Finished", fname="Mercury.locate_files()",kwargs={"template":template, "static": static})
+
         return _MercuryFiles(template=template, static=static)
     
         # for fdir, subdir, files in walk:

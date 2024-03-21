@@ -6,11 +6,14 @@ from mercury.config_parser.DataTypes.Mercury.Parameter import _Parameter
 
 
 
+from mercury.logger.DebugLogger import DebugLogger
+
+_logger = DebugLogger(__file__)
 
 
 class _Function:
     def __init__(self, name, config):
-        print("mercury.config_parser - _Function.init() with: ", "\n  name: ", name, "\n  config: ", config)
+        _logger.log(msg="Initalizing", fname="_Function.init()",kwargs={"name":name, "config": config})
         self.Name = name
         self.Methods = config['Method'] #method is required
         self.DataRoot = config.get('DataRoot')
@@ -19,8 +22,6 @@ class _Function:
         self.Parameters = {_Parameter(k, **v) for k, v in config.get('Parameters', {}).items()}
         self.Query = _Query(**config.get('Query', {'Override': ''}))
     def __str__(self) -> str:
-        print("\n\n-----Name:  ", self.Name)
-        print("\n\n-----Name:  ", type(self.Name))
         return ('Function ' + str(self.Name) + '\n' + 
             f'''Supported Methods: {self.Methods}''' + '\n' + 
             f'''Dataroot: {self.DataRoot}''' + '\n' + 

@@ -4,6 +4,11 @@ import re
 
 import mercury.engines.engine as engine
 
+from mercury.logger.DebugLogger import DebugLogger
+
+_logger = DebugLogger(__file__)
+
+
 class _TemplateFile:
     engine = None 
     filename = None
@@ -11,7 +16,7 @@ class _TemplateFile:
     content = None
     
     def __init__(self, fdir, filename):
-        print("mercury.app - _TemplateFile.init() with: ", "\n  fdir: ", fdir, "\n  filename: ", filename)
+        _logger.log(msg="Initalizing", fname="_TemplateFile.init()",kwargs={"fdir":fdir, "filename": filename})
         self.filename = filename 
         self.extension = pathlib.Path(filename).suffix
         self.engine = engine.get_engine_from_ext(self.extension)

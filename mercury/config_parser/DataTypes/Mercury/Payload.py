@@ -1,9 +1,14 @@
 
 
+from mercury.logger.DebugLogger import DebugLogger
+
+_logger = DebugLogger(__file__)
+
 
 class _Payload():
     def __init__(self, Path, DataRoot=True):
-        print("mercury.config_parser - _Payload.init() with: ", "\n  Path: ", Path, "\n  DataRoot: ", DataRoot)
+        _logger.log(msg="Initalizing", fname="_Payload.init()",kwargs={"Path":Path, "DataRoot": DataRoot})
+
         self.Path = Path
         self.UseDataRoot = DataRoot
         pass

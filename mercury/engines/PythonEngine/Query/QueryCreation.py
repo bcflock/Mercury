@@ -4,9 +4,14 @@ from mercury.config_parser.DataTypes.Types import _Parameter, _Query, _Table
 
 from mercury.engines.PythonEngine.Transform.TransformConfig import expr
 
+from mercury.logger.DebugLogger import DebugLogger
+
+_logger = DebugLogger(__file__)
+
 class QueryCreation:
     def __init__(self, TabLevel, TabWidth):
-        print("mercury.engines.PythonEngine - QueryCreation.init() with: ", "\n  TabLevel: ", TabLevel, "\n  TabWidth: ", TabWidth)
+        _logger.log(msg="Initalizing", fname="QueryCreation.init()",
+                    kwargs={"TabLevel": TabLevel, "TabWidth": TabWidth})
         self.TabLevel = TabLevel
         self.TabWidth = TabWidth
     def create(self, Query, Tables, Parameters):

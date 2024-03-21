@@ -2,9 +2,15 @@
 
 from mercury.config_parser.DataTypes.Types import _Parameter, _Source, _Payload, _URL
 
+from mercury.logger.DebugLogger import DebugLogger
+
+_logger = DebugLogger(__file__)
+
 class ParameterDeclaration:
     def __init__(self, DataRoot, TabLevel=1, TabWidth=4):
-        print("mercury.engines.PythonEngine - ParameterDeclaration.init() with: ", "\n  DataRoot: ", DataRoot, "\n  TabLevel: ", TabLevel, "\n  TabWidth: ", TabWidth)
+        _logger.log(msg="Initalizing", fname="ParameterDeclaration.init()",
+                    kwargs={"DataRoot":DataRoot, "TabLevel": TabLevel, "TabWidth": TabWidth})
+
         self.DataRoot = DataRoot
         self.TabWidth = TabWidth 
         self.TabLevel = TabLevel

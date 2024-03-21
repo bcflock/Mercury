@@ -5,6 +5,10 @@ from mercury.config_parser.DataTypes.Mercury.Source import _Source
 from mercury.config_parser.DataTypes.Type import _Type
 
 
+from mercury.logger.DebugLogger import DebugLogger
+
+_logger = DebugLogger(__file__)
+
 
 
 class _Parameter():
@@ -16,7 +20,15 @@ class _Parameter():
                  Column = None,
                  **kwargs):  
                 
-                print("mercury.config_parser - _Parameter.init() with: ", "\n  Key: ", Key, "\n  Type: ", Type, "\n  Identifier: ", Identifier, "\n  Source: ", Source, "\n  Column: ", Column, "\n **kwargs: ", kwargs)
+                _logger.log(msg="Initalizing", fname="_Parameter.init()",
+                            kwargs=({
+                                   "Key": Key,
+                                   "Type":Type, 
+                                   "Identifier": Identifier,
+                                   "Source": Source,
+                                   "Column": Column
+                            } | kwargs)) # | operator adds two dicts s.t. {a: 1} | {b: 2} = {a:1, b: 2}
+
                 self.Key = Key
                 self.Type = _Type(Type)
                 self.Identifier = Identifier

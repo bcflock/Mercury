@@ -1,17 +1,19 @@
 
 
+from mercury.logger.DebugLogger import DebugLogger
+
+_logger = DebugLogger(__file__)
+
 
 
 class _Query:
     def __init__(self, Type="", Override=""):
-        print("mercury.config_parser - _Query.init() with: ", "\n  Type: ", Type, "\n  Override: ", Override)
-        print("Type:",Type)
-        print("Override:",Override)
+        _logger.log(msg="Initalizing", fname="_Query.init()",kwargs={"Type":Type, "Override": Override})
+
         if not Type and not Override:
            raise ValueError 
         Type = Type.upper()
         if Type:
-            print(Type)
             if Type == "SELECT":
                 self.query = '''
                     SELECT 
@@ -37,11 +39,14 @@ class _Query:
                         {mercury::query::insert::values}
 '''
             else:
-                raise ValueError("Missing Query Type and no Override provided")
+                _logger.error(msg="Missing Query Type and no Override provided", fname="_Query.init()")
+                raise("") # _logger.error() will output then raise the given message
         if Override:
             self.query = Override     
         if not self.query:
-            raise ValueError("Missing Query Type and no Override provided")
+            _logger.error(msg="Missing Query Type and no Override provided", fname="_Query.init()")
+            raise("") # _logger.error() will output then raise the given message
+
 
         
     def __str__(self):
