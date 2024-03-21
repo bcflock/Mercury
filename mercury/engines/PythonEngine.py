@@ -161,6 +161,7 @@ class QueryCreation:
         return f'{self.Table.Name} {self.Table.Alias}'
         
     def updateParameter(self,p:config_parser._Parameter):
+        print(p)
         return f'{self.Table.Alias}."{p.Column}" = ' + "{" + p.Key + '}'
 
     
@@ -179,4 +180,5 @@ class QueryCreation:
             col, val = insert_table(p)
             columns.append(col)
             values.append(val)
-        return f"({','.join(columns)})", f"({','.join(values)})"
+        return f"{self.Table.Name}({','.join(columns)})", f"({','.join(values)})"
+
