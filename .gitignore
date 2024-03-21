@@ -2,9 +2,11 @@ template/*
 !template/README
 !template/example.mercury.py
 !template/static.py
-mercury/__pycache__/
-mercury/engines/__pycache__/
+
+__pycache__/
 test/
 
 UpdateProfile/
 AddProfile/
+
+output/

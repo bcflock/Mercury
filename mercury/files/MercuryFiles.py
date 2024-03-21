@@ -9,7 +9,7 @@ class _MercuryFiles:
         self.static_files = static 
         self.template_files = template
 
-    def apply_config(self, model: Model):
+    def apply_config(self, model: Model, outputdir="output"):
         """_summary_
             creates the folders for each of the functions,
             copies over static files and applies config
@@ -18,15 +18,16 @@ class _MercuryFiles:
             """
         print("\n\nmercury.app - _MercuryFiles.apply_config() entered with: \n  model: ",model)
         #folders = [f.Name for f in model.Functions]
+        os.makedirs(f'./{outputdir}', exist_ok=True )
         for func in model.Functions:
             fname = func.Name
-            os.makedirs(f'./{fname}', exist_ok=True )
+            os.makedirs(f'./{outputdir}/{fname}', exist_ok=True )
             for template in self.template_files:
-                with open(f'{fname}/{template.outputname}', 'w+') as f:
+                with open(f'{outputdir}/{fname}/{template.outputname}', 'w+') as f:
                     f.write(template.engine.apply(func, template.content))
                     #f.write(template.engine.apply(model))
             for static in self.static_files:
-                with open(f'{fname}/{static.filename}', 'w+') as f:
+                with open(f'{outputdir}/{fname}/{static.filename}', 'w+') as f:
                     static.write(fname)
             print("mercury.app - _MercuryFiles.apply_config()  finished writing function: ", func)
 

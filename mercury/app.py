@@ -13,10 +13,11 @@ from mercury.config_parser.config_parser import ConfigParser
 
 class Mercury():
 
-    def __init__( self, config, templatedir ):
+    def __init__( self, config, templatedir, outputdir="output"):
         print("mercury.app - Mercury.init() with: ", "\n  config: ", config, "\n  templatedir: ", templatedir)
         self.config = config
         self.templatedir = templatedir
+        self.outputdir = outputdir
 
     def locate_files(self):
         p = pathlib.Path(f'./{self.templatedir}')
@@ -53,5 +54,6 @@ class Mercury():
 
     def execute(self):
         self.locate_files().apply_config(
-            self.load_config()
+            self.load_config(),
+            outputdir=self.outputdir
         )
