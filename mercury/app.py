@@ -47,17 +47,14 @@ class _MercuryFiles:
         Args:
             config (_type_): _description_
             """
-        #print(model)
-        
-        
-        #folders = [f.Name for f in model.Functions]
         for func in model.Functions:
             fname = func.Name
             os.makedirs(f'./{fname}', exist_ok=True )
+            
             for template in self.template_files:
                 with open(f'{fname}/{template.outputname}', 'w+') as f:
                     f.write(template.engine.apply(func, template.content))
-                    #f.write(template.engine.apply(model))
+            
             for static in self.static_files:
                 with open(f'{fname}/{static.filename}', 'w+') as f:
                     static.write(fname)
