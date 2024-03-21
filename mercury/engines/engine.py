@@ -1,4 +1,4 @@
-import mercury.engines.PythonEngine
+import mercury.engines.PythonEngine.PythonEngine
 
 extension_map = {
     '.py': lambda : PythonEngine(),
@@ -22,7 +22,7 @@ class PythonEngine(Engine):
     def __init__(self):
         pass
     def apply(self, model, template_content =""):
-        return mercury.engines.PythonEngine.transform(model, template_content)
+        return mercury.engines.PythonEngine.PythonEngine.transform(model, template_content)
 
 class JavaEngine(Engine):
     pass

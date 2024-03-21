@@ -4,87 +4,50 @@ import enum
 import re
 import os
 import mercury.engines.engine as engine
-from . import config_parser
-class _TemplateFile:
-    engine = None 
-    filename = None
-    extension = None
-    content = None
-    
-    def __init__(self, fdir, filename):
-        self.filename = filename 
-        self.extension = pathlib.Path(filename).suffix
-        self.engine = engine.get_engine_from_ext(self.extension)
 
-        self.fdir = fdir
-        with open(f'{self.fdir}/{self.filename}', 'r') as f:
-            self.content = f.read()
-        match = re.match(r'^(.*)\.mercury'+f'\\{self.extension}$', str(filename))
-        self.outputname = match.group(1) + self.extension
+from mercury.files.MercuryFiles import _MercuryFiles
+from mercury.files.TemplateFile import _TemplateFile
+from mercury.files.StaticFile import _StaticFile
 
-    def __str__(self):
-        return f"[{self.fdir}/{self.filename}, {self.extension}, {self.outputname}]"
-class _StaticFile:
-    def __init__(self, fdir, filename):
-        self.fdir = fdir
-        self.filename = filename
-        with open(f'{self.fdir}/{self.filename}', 'r') as f:
-            self.content = f.read()
-    def write(self, fname):
-        with open(f'{fname}/{self.filename}', 'w+') as f:
-            f.write(self.content)
-
-class _MercuryFiles:
-
-    def __init__(self, static, template):
-        self.static_files = static 
-        self.template_files = template
-
-    def apply_config(self, model: config_parser.Model):
-        """_summary_
-            creates the folders for each of the functions,
-            copies over static files and applies config
-        Args:
-            config (_type_): _description_
-            """
-        for func in model.Functions:
-            fname = func.Name
-            os.makedirs(f'./{fname}', exist_ok=True )
-            
-            for template in self.template_files:
-                with open(f'{fname}/{template.outputname}', 'w+') as f:
-                    f.write(template.engine.apply(func, template.content))
-            
-            for static in self.static_files:
-                with open(f'{fname}/{static.filename}', 'w+') as f:
-                    static.write(fname)
+from mercury.config_parser.config_parser import ConfigParser
 
 class Mercury():
 
     def __init__( self, config, templatedir ):
+        print("mercury.app - Mercury.init() with: ", "\n  config: ", config, "\n  templatedir: ", templatedir)
         self.config = config
         self.templatedir = templatedir
 
     def locate_files(self):
         p = pathlib.Path(f'./{self.templatedir}')
-        files = p.walk() 
         static = []
         template = []
-        walk = p.walk() 
-
-        for fdir, subdir, files in walk:
-            for file in files:
-                fpath = pathlib.Path(f'{fdir}/{file}')
-                if str(fpath) == self.config: continue
-                suff = fpath.suffixes
-                if '.mercury' in suff:
-                    template.append(_TemplateFile(fdir, file))
-                else:
-                    static.append(_StaticFile(fdir, file))
+        walk = p.iterdir() 
+        for file in walk:
+            print("mercury.app - Mercury.locate_files() Processing File:  ", file, "\n  file.name: ", file.name)
+            fpath = pathlib.Path(f'{file}')
+            if str(fpath) == self.config: continue
+            suff = fpath.suffixes
+            if '.mercury' in suff:
+                template.append(_TemplateFile(self.templatedir, file.name))
+            else:
+                static.append(_StaticFile(self.templatedir, file.name))
+        print("mercury.app - Mercury.locate_files() finished with","\n  template: ", template, "\n  static: ", static)
         return _MercuryFiles(template=template, static=static)
     
+        # for fdir, subdir, files in walk:
+        #     for file in files:
+        #         fpath = pathlib.Path(f'{fdir}/{file}')
+        #         if str(fpath) == self.config: continue
+        #         suff = fpath.suffixes
+        #         if '.mercury' in suff:
+        #             template.append(_TemplateFile(fdir, file))
+        #         else:
+        #             static.append(_StaticFile(fdir, file))
+        # return _MercuryFiles(template=template, static=static)
+    
     def load_config(self):
-        return config_parser.ConfigParser.parse(self.config)
+        return ConfigParser.parse(self.config)
         
 
 
