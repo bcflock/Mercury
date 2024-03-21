@@ -1,7 +1,7 @@
 Environment:
   Database: Quickclass
 Functions:
-    UpdateProfile:
+    AddProfile:
         Method: 
             - POST
         DataRoot: editProfile
@@ -11,46 +11,94 @@ Functions:
                 Alias: p
                 Default: true   
         Parameters: &profileParams
-            ProfileID:
+            lname:
+                Type: 
+                    String:
+                        Pattern: 
+                            Expression: /[A-Za-z]+/
+            fname: 
+                Type: 
+                    String:
+            profilePicture:
+                Type: 
+                    String:
+                        Pattern: URL
+            personalWebsiteUrl: 
+                Type: 
+                    String: 
+                        Pattern: URL
+        Query: 
+            Type: Insert
+    UpdateProfile:
+        Method:
+            - PATCH
+        DataRoot: addProfile
+        Tables: *profileTable
+        Parameters: 
+            <<: *profileParams
+            ProfileID:  
                 Type: 
                     Integer:
-                    OnFail: 
-                        Code: 400
-                        Message: Uh Oh
                 Source: 
                     URL:
                         Pattern: /profile/(\d+)
                         Value: \1
                 Identifier: True 
-            FirstName:
-                Type: 
-                    String:
-                Source: 
-                    Payload:
-                        Path: fname 
-                        DataRoot: false 
-                Column: fname 
-            LastName: 
-                Type: 
-                    String:
-                Column: lname
-            profilePicture:
-                Type: 
-                    String:
-            personalWebsiteUrl:
-                Type: 
-                    String:
-            mediumUrl:
-                Type: 
-                    String:
-                        Pattern: URL
-        Query: 
-            Type: UPDATE
-    AddProfile:
-        Method:
-            - POST
-        DataRoot: addProfile
-        Tables: *profileTable
-        Parameters: *profileParams
         Query:
-            Type: INSERT
+            Type: Update
+    AddPost:
+        Method: 
+            - POST
+        Tables: 
+            Posts:
+                Name: quickclass.posts
+                Alias: p
+                Default: True
+        DataRoot: addPost
+        Parameters:
+            PostContent:
+                Type: 
+                    String:
+                        Length:
+                            Lower: 0
+                            Upper: 256_000
+            UserId:
+                Name: userid
+                Type:
+                    Integer:
+                        Bounds:
+                            Lower: 1
+                Identifier: True
+            Foo:
+                Type: 
+                    String:
+                Identifier: True
+            Bar: 
+                Type:
+                    Integer:
+                        Bounds: 
+                            Lower: -1
+                            Upper: 1
+        Query: 
+            Override: |
+                    THIS IS NOT A VALID QUERY
+
+                    THESE ARE THE TABLES:
+                    {mercury::query::tables}
+                    
+                    THIS IS AN UPDATE:
+                    {mercury::query::update::parameters}
+                    
+                    THIS IS A SELECT:
+                    {mercury::query::select::parameters}
+                    
+                    THIS IS THE FIRST PART OF AN INSERT
+                    {mercury::query::insert::columns}
+
+                    AND THIS IS THE SECOND PART
+                    {mercury::query::insert::values}
+
+                    THIS IS THE CONDITION:
+                    {mercury::query::identifier}
+
+
