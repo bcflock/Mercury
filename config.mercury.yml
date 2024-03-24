@@ -1,5 +1,6 @@
-Environment:
-  Database: Quickclass
+# yaml-language-server: $schema=mercury.schema.json
+#Environment:
+#  Database: Quickclass
 Functions:
     AddProfile:
         Method: 
@@ -22,13 +23,12 @@ Functions:
             profilePicture:
                 Type: 
                     String:
-                        Pattern: URL
+                        Pattern: URLa
             personalWebsiteUrl: 
                 Type: 
                     String: 
                         Pattern: URL
-        Query: 
-            Type: Insert
+        Query: INSERT
     UpdateProfile:
         Method:
             - PATCH
@@ -45,7 +45,7 @@ Functions:
                         Value: \1
                 Identifier: True 
         Query:
-            Type: Update
+            Type: UPDATE
     AddPost:
         Method: 
             - POST

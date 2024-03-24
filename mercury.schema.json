@@ -1,0 +1,238 @@
+{
+    "$id": "https://theboard.tech/draft/mercury/schema",
+    "description": "A schema for validating mercury config files",
+    "type": "object",
+    "version": "0.0.1",
+    "title": "Mercury Specification",
+    "properties": {
+        "Functions": {
+            "id": "#/properties/Functions",
+            "description": "All functions go here",
+            "type": "object",
+            "patternProperties": {
+                "^[a-zA-Z._-]+$": {
+                    "$ref": "#/$defs/function"
+                }
+            }
+        }
+    },
+    "additionalProperties": false,
+    "$defs": {
+        "function": {
+            "description": "An individual function within the Mercury hierarchy",
+            "id": "#/$defs/function",
+            "type": "object",
+            "properties": {
+                "Name": {"type": "string"},
+                "DataRoot": {"type": "string"},
+                "Tables": { 
+                    "patternProperties": {
+                        "^[a-zA-Z_-]+$": {
+                            "$ref": "#/$defs/table"
+                        }
+                    }
+                },
+                "Method": { 
+                    "oneOf": [
+                        {"$ref": "#/$defs/method"},
+                        {
+                            "type": "array",
+                            "items": {"$ref": "#/$defs/method"}
+                        }
+                    ]
+                },
+                "Parameters": {
+                    "description": "A list of the relevant parameters",
+                    "type":"object",
+                    "patternProperties": {
+                        "^[a-zA-Z]$": {
+                            "$ref": "#/$defs/parameter"
+                        }
+                    }
+                }, 
+                "Query": {
+                    "anyOf": [
+                        {"type": "string", "enum": ["SELECT", "UPDATE", "INSERT"]},
+                        {
+                            "type": "object",
+                            "properties": {
+                                "Type": {
+                                    "type": "string", 
+                                    "enum": [
+                                        "SELECT", 
+                                        "UPDATE", 
+                                        "INSERT"
+                                    ]
+                                },
+                                "Override": { "type": "string" }
+                            },
+                            "oneOf": [
+                                {"required": ["Type"]},
+                                {"required": ["Override"]}
+                            ],
+                            "additionalProperties": false
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "DataRoot",
+                "Tables",
+                "Method",
+                "Parameters"
+            ],
+            "additionalProperties": false
+        },
+        "method": {
+            "type": "string",
+            "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]
+        },
+        "table": {
+            "type": "object",
+            "properties":{
+               "Name": {
+                    "type": "string",
+                    "description": "The name of the table in the database"
+                },
+               "Alias": {
+                    "type": "string",
+                    "description": "The alias of the table for use in the query"
+                },
+               "Default": {
+                    "type": "boolean",
+                    "description": "If a function doesn't specify a table, then use this one"
+                }
+            }, 
+            "additionalProperties": false
+        },
+        "parameter": {
+            "type": "object",
+            "description": "A parameter from the payload, passed into the query",
+            "properties": {
+                "Type": {"$ref": "#/$defs/param_type"},
+                "Source": {"$ref": "#/$defs/param_source"},
+                "Column": {"type": "string"},
+                "Identifier": {"type": "boolean"}
+            },
+            "required": ["Type"],
+            "additionalProperties": false
+        },
+        "param_type": {
+            "type": "object",
+            "properties": {
+                "String": { "$ref": "#/$defs/param_type_string"}
+            },
+            "oneOf": [
+                {"required": ["String"]},
+                {"required": ["Integer"]}
+            ]
+        },
+        "param_type_integer": {
+            "type": "object",
+            "properties": {
+                "Bounds": {
+                    "type": "object",
+                    "properties": {
+                        "Lower": {"type": "integer"},
+                        "Upper": {"type": "integer"},
+                        "OnFail": {"$ref": "#/$defs/on_fail"}
+                    }
+                }
+            }
+        },
+        "param_type_string": {
+            "type": "object",
+            "properties": {
+                "Pattern": {
+                    "oneOf": [
+                        {
+                            "type": "object", 
+                            "properties": {
+                                "Expression": {
+                                    "oneOf": [
+                                        {"type": "string", "pattern": "^$"},
+                                        {"$ref": "#/$defs/predefined_string_patterns"}
+                                    ]
+                                },
+                                "OnFail": {"$ref": "#/$defs/on_fail"}
+                            },
+                            "required": ["Expression"],
+                            "additionalProperties": false
+                        },
+                        {"type": "string", "pattern": "^/.+/$"},
+                        {"$ref": "#/$defs/predefined_string_patterns"}
+                    ]
+                },
+                "Length": {
+                    "type":"object",
+                    "properties": {
+                        "Lower": {"type": "integer"},
+                        "Upper": {"type": "integer"},
+                        "OnFail": {"$ref": "#/$defs/on_fail"}
+                    },
+                    "anyOf":[ 
+                        {"required": ["Lower"]},
+                        {"required": ["Upper"]}
+                    ],
+                    "additionalProperties":false 
+                }
+            }
+        },
+        "param_source": {
+            "oneOf": [
+                { 
+                    "type": "object", 
+                    "properties": {
+                        "URL": {"$ref": "#/$defs/param_source_url"}
+                    }
+                },
+                { 
+                    "type": "object", 
+                    "properties": {
+                        "Payload": {"$ref": "#/$defs/param_source_payload"}
+                    }
+                }
+            ]
+        },
+        "param_source_url": {
+            "type": "object",
+            "properties": {
+                "Pattern":  {"type": "string"},
+                "Value":    {"type": "string"}
+            },
+            "required": ["Pattern", "Value"],
+            "additionalProperties":false 
+        },
+        "param_source_payload": {
+            "type": "object",
+            "properties": {
+                "Path": {"type":"string"},
+                "DataRoot":{"type": "boolean"}
+            },
+            "additionalProperties":false 
+        },
+        "on_fail": {
+            "type": "object",
+            "properties": {
+                "Code": {"type": "integer"},
+                "Message": {"type": "string"}
+            },
+            "additionalProperties":false 
+        },
+        "predefined_string_patterns": {
+            "type": "string",
+            "enum": ["URL", "Email"]
+        },
+        "string_or_list": {
+            "oneOf": [
+              {"type": "string"},
+              {"$ref": "#/$defs/list_of_strings"}
+            ]
+          },
+        "list_of_strings": {
+            "type": "array",
+            "items": {"type": "string"},
+            "uniqueItems": true
+        }
+    }
+}

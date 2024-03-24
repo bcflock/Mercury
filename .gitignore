@@ -8,3 +8,15 @@ test/
 
 UpdateProfile/
 AddProfile/
+AddPost/__init__.py
+AddPost/accessor.py
+AddPost/app.py
+AddPost/example.py
+AddPost/execute.py
+AddPost/format.py
+AddPost/getSecret.py
+AddPost/models.py
+AddPost/README.md
+AddPost/requirements.txt
+AddPost/static.py
+AddPost/testPlaylistAccessor.py

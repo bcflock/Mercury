@@ -1,21 +1,18 @@
-Variables:
-    Database: Quickclass
 Functions:
     UpdateProfile:
-        Name?: 
+        Name: "UpdateProfile"
         Method: 
             - POST
-        Options:
-            #If exists, do you keep the existing files or overwrite them
-            Overwrite: True|False 
         #where the data resides; 
-        DataRoot?: 'editProfile'
+        DataRoot: 'editProfile'
         # default table is used if there is no table override
         Tables:
             Profile:
                 Name: quickclass.profile
                 Alias: p
                 Default: true
+            Cheese:
+                Name: quickclass.cheese
         Parameters: 
             ProfileID:
                 Type: 
@@ -85,8 +82,7 @@ Functions:
         #mercury::expand::parameters::update is a function that takes the parameters 
         # and automatically sets up the 
 
-        Query?: 
-            Type: SELECT|INSERT|UPDATE
+        Query: 
             Override: #Override if the default generated Query isn't good enough for you
                 |
                 UPDATE 
