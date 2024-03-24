@@ -23,7 +23,7 @@ Functions:
             profilePicture:
                 Type: 
                     String:
-                        Pattern: URLa
+                        Pattern: URL
             personalWebsiteUrl: 
                 Type: 
                     String: 
@@ -61,7 +61,7 @@ Functions:
                     String:
                         Length:
                             Lower: 0
-                            Upper: 256_000
+                            Upper: 256000
             UserId:
                 Name: userid
                 Type:

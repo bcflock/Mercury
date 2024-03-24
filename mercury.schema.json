@@ -30,7 +30,8 @@
                         "^[a-zA-Z_-]+$": {
                             "$ref": "#/$defs/table"
                         }
-                    }
+                    },
+                    "additionalProperties": false
                 },
                 "Method": { 
                     "oneOf": [
@@ -45,10 +46,11 @@
                     "description": "A list of the relevant parameters",
                     "type":"object",
                     "patternProperties": {
-                        "^[a-zA-Z]$": {
+                        "^[a-zA-Z]+$": {
                             "$ref": "#/$defs/parameter"
                         }
-                    }
+                    },
+                    "additionalProperties": false
                 }, 
                 "Query": {
                     "anyOf": [
@@ -110,6 +112,7 @@
             "description": "A parameter from the payload, passed into the query",
             "properties": {
                 "Type": {"$ref": "#/$defs/param_type"},
+                "Name": {"type": "string"},
                 "Source": {"$ref": "#/$defs/param_source"},
                 "Column": {"type": "string"},
                 "Identifier": {"type": "boolean"}
@@ -120,7 +123,18 @@
         "param_type": {
             "type": "object",
             "properties": {
-                "String": { "$ref": "#/$defs/param_type_string"}
+                "String" : { 
+                    "oneOf": [
+                        {"type": "null"},
+                        {"$ref": "#/$defs/param_type_string"}
+                    ]
+                },
+                "Integer": {
+                    "oneOf": [
+                        {"type": "null"},
+                        {"$ref": "#/$defs/param_type_integer"}
+                    ]
+                }
             },
             "oneOf": [
                 {"required": ["String"]},
@@ -144,13 +158,18 @@
             "type": "object",
             "properties": {
                 "Pattern": {
+                    "description": 
+                        "Pattern for string to match. Can be URL, Email, or a regex denoted using slash-notation ",
                     "oneOf": [
                         {
                             "type": "object", 
                             "properties": {
                                 "Expression": {
                                     "oneOf": [
-                                        {"type": "string", "pattern": "^$"},
+                                        {
+                                            "type": "string", 
+                                            "pattern": "^/.*/$"
+                                        },
                                         {"$ref": "#/$defs/predefined_string_patterns"}
                                     ]
                                 },
@@ -159,7 +178,7 @@
                             "required": ["Expression"],
                             "additionalProperties": false
                         },
-                        {"type": "string", "pattern": "^/.+/$"},
+                        {"type": "string", "pattern": "^/.*/$"},
                         {"$ref": "#/$defs/predefined_string_patterns"}
                     ]
                 },
@@ -179,20 +198,16 @@
             }
         },
         "param_source": {
+            "type": "object",
+            "properties" :{
+                "URL": {"$ref": "#/$defs/param_source_url"},
+                "Payload": {"$ref": "#/$defs/param_source_payload"}
+            },
             "oneOf": [
-                { 
-                    "type": "object", 
-                    "properties": {
-                        "URL": {"$ref": "#/$defs/param_source_url"}
-                    }
-                },
-                { 
-                    "type": "object", 
-                    "properties": {
-                        "Payload": {"$ref": "#/$defs/param_source_payload"}
-                    }
-                }
-            ]
+                {"required":["URL"]},
+                {"required":["Payload"]}
+            ],
+            "additionalProperties": false
         },
         "param_source_url": {
             "type": "object",

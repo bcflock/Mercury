@@ -35,18 +35,15 @@ Functions:
             FirstName:
                 Type: 
                     String:
-                        Pattern: ~
+                        Pattern: /a/
                         Length: 
                             Lower: 0
                             Upper: 60
-                            OnFail?:
-                                Code: ~
-                                Message: ~
                 Source: 
                     Payload:
                         Path: fname #expands to editProfile.fname, which is then used to get the value from the json
-                        DataRoot?: false #exclude data root from the path
-                Column?: fname 
+                        DataRoot: false #exclude data root from the path
+                Column: fname 
             
             #So with this entry, since the key is equal to the column name
             # and ${dataroot}.${key} is also equal to the path in the json, 
@@ -54,11 +51,12 @@ Functions:
             LastName: 
                 #I believe we can omit Pattern and Length so long as we just have the type
                 Type: 
-                    String:
+                    String: 
                 Column: lname
             profilePicture:
                 Type: 
                     String:
+                        Pattern: //
                 #Here, we may omit the column name because profilePicture is the name of the column
             personalWebsiteUrl:
                 Type: 
