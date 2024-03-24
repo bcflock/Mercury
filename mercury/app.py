@@ -72,6 +72,7 @@ class Mercury():
         template = []
         walk = p.walk() 
 
+        #TODO: Support subdirectories
         for fdir, subdir, files in walk:
             for file in files:
                 fpath = pathlib.Path(f'{fdir}/{file}')
