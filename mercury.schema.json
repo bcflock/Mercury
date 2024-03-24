@@ -1,4 +1,5 @@
 {
+    "$schema": "https://json-schema.org/draft/2020-12/output/schema",
     "$id": "https://theboard.tech/draft/mercury/schema",
     "description": "A schema for validating mercury config files",
     "type": "object",
@@ -159,7 +160,7 @@
             "properties": {
                 "Pattern": {
                     "description": 
-                        "Pattern for string to match. Can be URL, Email, or a regex denoted using slash-notation ",
+                        "Pattern for string to match. Can be URL, Email, or a regex denoted using slash-notation",
                     "oneOf": [
                         {
                             "type": "object", 
