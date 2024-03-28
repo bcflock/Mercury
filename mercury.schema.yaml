@@ -21,16 +21,19 @@ $defs:
     type: object
     properties:
       Name:
-        Description: NOTYETWRITTEN
+        description: NOTYETWRITTEN
         type: string
       DataRoot:
+        description: NOTYETWRITTEN
         type: string
       Tables:
+        description: NOTYETWRITTEN
         patternProperties:
           ^[a-zA-Z_-]+$:
             $ref: "#/$defs/table"
         additionalProperties: false
       Method:
+        description: NOTYETWRITTEN
         oneOf:
           - $ref: "#/$defs/method"
           - type: array
@@ -73,6 +76,7 @@ $defs:
       - Parameters
     additionalProperties: false
   method:
+    description: A string (in all caps) representing an HTTP method 
     type: string
     enum:
       - GET
@@ -81,6 +85,7 @@ $defs:
       - PATCH
       - DELETE
   table:
+    description: NOTYETWRITTEN
     type: object
     properties:
       Name:
@@ -100,6 +105,7 @@ $defs:
       Type:
         $ref: "#/$defs/param_type"
       Name:
+        description: A string (in all caps) representing an HTTP method 
         type: string
       Source:
         $ref: "#/$defs/param_source"
@@ -112,6 +118,7 @@ $defs:
     additionalProperties: false
   param_type:
     type: object
+    description: NOTYETWRITTEN
     properties:
       String:
         oneOf:
@@ -148,6 +155,7 @@ $defs:
           - type: object
             properties:
               Expression:
+                description: NOTYETWRITTEN
                 oneOf:
                   - type: string
                     pattern: ^/.*/$
@@ -161,6 +169,7 @@ $defs:
             pattern: ^/.*/$
           - $ref: "#/$defs/predefined_string_patterns"
       Length:
+        description: "The lower and upper bounds on the length of the string"
         type: object
         properties:
           Lower:
@@ -179,6 +188,7 @@ $defs:
     type: object
     properties:
       URL:
+        description: NEEDS TO BE REIMPLEMENTED TO USE PATH PARAMETERS
         $ref: "#/$defs/param_source_url"
       Payload:
         $ref: "#/$defs/param_source_payload"
@@ -192,6 +202,7 @@ $defs:
     type: object
     properties:
       Pattern:
+        description: a regex pattern
         type: string
       Value:
         type: string
@@ -200,19 +211,29 @@ $defs:
       - Value
     additionalProperties: false
   param_source_payload:
+    description: NOTYETWRITTEN
     type: object
     properties:
       Path:
+        description: NOTYETWRITTEN
         type: string
       DataRoot:
+        description: NOTYETWRITTEN
         type: boolean
     additionalProperties: false
   on_fail:
+    description: NOTYETWRITTEN
     type: object
     properties:
       Code:
+        description: |
+          Error code associated with this failure case, 
+          defaults to 400
         type: integer
       Message:
+        description: |
+          Error message associated with this failure case,
+          defaults to empty string 
         type: string
     additionalProperties: false
   predefined_string_patterns:
