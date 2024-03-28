@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=mercury.schema.json
+# yaml-language-server: $schema=mercury.schema.yaml
 #Environment:
 #  Database: Quickclass
 Functions:
