@@ -36,9 +36,10 @@ class _StaticFile:
 
 class _MercuryFiles:
 
-    def __init__(self, static, template):
+    def __init__(self, static, template, write_dir):
         self.static_files = static 
         self.template_files = template
+        self.write_dir = write_dir
 
     def apply_config(self, model: config_parser.Model):
         """_summary_
@@ -49,21 +50,22 @@ class _MercuryFiles:
             """
         for func in model.Functions:
             fname = func.Name
-            os.makedirs(f'./{fname}', exist_ok=True )
+            os.makedirs(f'{self.write_dir}/{fname}', exist_ok=True )
             
             for template in self.template_files:
-                with open(f'{fname}/{template.outputname}', 'w+') as f:
+                with open(f'{self.write_dir}/{fname}/{template.outputname}', 'w+') as f:
                     f.write(template.engine.apply(func, template.content))
             
             for static in self.static_files:
-                with open(f'{fname}/{static.filename}', 'w+') as f:
+                with open(f'{self.write_dir}/{fname}/{static.filename}', 'w+') as f:
                     static.write(fname)
 
 class Mercury():
 
-    def __init__( self, config, templatedir ):
+    def __init__( self, config, templatedir, output):
         self.config = config
         self.templatedir = templatedir
+        self.write_dir = output
 
     def locate_files(self):
         p = pathlib.Path(f'./{self.templatedir}')
@@ -82,7 +84,7 @@ class Mercury():
                     template.append(_TemplateFile(fdir, file))
                 else:
                     static.append(_StaticFile(fdir, file))
-        return _MercuryFiles(template=template, static=static)
+        return _MercuryFiles(template=template, static=static, write_dir=self.write_dir)
     
     def load_config(self):
         return config_parser.ConfigParser.parse(self.config)

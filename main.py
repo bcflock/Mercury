@@ -16,6 +16,14 @@ if __name__ == "__main__":
         "--template",
         default = "template"
     )
+    parser.add_argument(
+        '--output',
+        default='.'
+    )
+    parser.add_argument(
+        "--tab-width",
+        default=2
+    )
 
     args = parser.parse_args()
-    Mercury(args.config, args.template).execute()
+    Mercury(args.config, args.template, args.output).execute()
