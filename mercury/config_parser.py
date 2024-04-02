@@ -5,6 +5,7 @@ from collections import defaultdict
 
 #TODO: There should be a refactor that takes advantage of yaml tags for directly creating the objects
 
+VERSION = "0.0.2"
 Patterns = {
     'URL': r'^(?:(http|https):\/\/)([\w.-]+)(\.[\w.-]+)+([\/\w\.-]*)*\/?$',
     'Email': r'^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$'
@@ -123,9 +124,10 @@ class _Source():
 
 
 class _URL():
-    def __init__(self, Pattern, Value):
-        self.Pattern = Pattern
-        self.Value = Value
+    def __init__(self, QueryStringParam=None, PathParam=None):
+        assert not (QueryStringParam and PathParam)
+        self.PathParam = PathParam
+        self.QueryStringParam = QueryStringParam
         pass
     def __str__(self):
         return 'URL: {self.Pattern}, {self.Value}'

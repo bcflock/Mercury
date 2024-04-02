@@ -3,7 +3,7 @@ valid: true
 $id: https://theboard.tech/draft/mercury/schema
 description:  A schema for validating mercury config files
 type: object
-version: 0.0.1
+version: 0.0.2
 title: Mercury Specification
 properties:
   Functions:
@@ -48,11 +48,11 @@ $defs:
         additionalProperties: false
       Query:
         anyOf:
-          - type: string
-            enum:
-              - SELECT
-              - UPDATE
-              - INSERT
+          #- type: string
+          #  enum:
+          #    - SELECT
+          #    - UPDATE
+          #    - INSERT
           - type: object
             properties:
               Type:
@@ -102,6 +102,8 @@ $defs:
     type: object
     description: A parameter from the payload, passed into the query
     properties:
+      Table:
+        type: string
       Type:
         $ref: "#/$defs/param_type"
       Name:
@@ -201,14 +203,16 @@ $defs:
   param_source_url:
     type: object
     properties:
-      Pattern:
-        description: a regex pattern
+      PathParam:
+        description: Path Parameter
         type: string
-      Value:
+      QueryStringParam:
         type: string
-    required:
-      - Pattern
-      - Value
+    oneOf:
+      - required:
+        - PathParam
+      - required: 
+        - QueryStringParam
     additionalProperties: false
   param_source_payload:
     description: NOTYETWRITTEN

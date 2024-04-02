@@ -1,5 +1,7 @@
 import mercury.config_parser as config_parser
 import re
+
+VERSION = "0.0.2"
 expr = {
         'parameters': {
             'declare'  : re.compile(r"([\t\s]*){mercury::parameters::declare}"),
@@ -83,7 +85,10 @@ class ParameterDeclaration:
         return f'''payload.{DataRoot}{Payload.Path}'''
     
     def URLSourceToString(self, URL:config_parser._URL):
-        return f'''re.sub('{URL.Pattern}', r'{URL.Value}', payload.path)'''
+        if URL.PathParam:
+            return f'''payload['pathParameters']['{URL.PathParam}']'''
+        if URL.QueryStringParam:
+            return f'''payload['queryStringParameters']['{URL.QueryStringParam}']'''
 
 class ParameterValidation:
     def __init__(self, TabLevel=1, TabWidth=4):
