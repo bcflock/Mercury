@@ -3,7 +3,7 @@ valid: true
 $id: https://theboard.tech/draft/mercury/schema
 description:  A schema for validating mercury config files
 type: object
-version: 0.0.2
+version: 0.0.4
 title: Mercury Specification
 properties:
   Functions:
@@ -43,7 +43,7 @@ $defs:
         description: A list of the relevant parameters
         type: object
         patternProperties:
-          ^[a-zA-Z]+$:
+          ^[a-zA-Z_]+$:
             $ref: "#/$defs/parameter"
         additionalProperties: false
       Query:
@@ -88,6 +88,8 @@ $defs:
     description: NOTYETWRITTEN
     type: object
     properties:
+      Join: 
+        type: join_object
       Name:
         type: string
         description: The name of the table in the database
