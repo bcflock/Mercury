@@ -30,8 +30,8 @@ class _StaticFile:
         self.filename = filename
         with open(f'{self.fdir}/{self.filename}', 'r') as f:
             self.content = f.read()
-    def write(self, fname):
-        with open(f'{fname}/{self.filename}', 'w+') as f:
+    def write(self, fname, write_dir):
+        with open(f'{write_dir}/{fname}/{self.filename}', 'w+') as f:
             f.write(self.content)
 
 class _MercuryFiles:
@@ -58,7 +58,7 @@ class _MercuryFiles:
             
             for static in self.static_files:
                 with open(f'{self.write_dir}/{fname}/{static.filename}', 'w+') as f:
-                    static.write(fname)
+                    static.write(fname, self.write_dir)
 
 class Mercury():
 
