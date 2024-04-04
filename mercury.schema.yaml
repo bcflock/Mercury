@@ -1,9 +1,9 @@
 # yaml-language-server: $schema=https://json-schema.org/draft/2020-12/output/schema
 valid: true
 $id: https://theboard.tech/draft/mercury/schema
-description:  A schema for validating mercury config files
+description: A schema for validating mercury config files
 type: object
-version: 0.0.4
+version: 0.0.5
 title: Mercury Specification
 properties:
   Functions:
@@ -48,11 +48,6 @@ $defs:
         additionalProperties: false
       Query:
         anyOf:
-          #- type: string
-          #  enum:
-          #    - SELECT
-          #    - UPDATE
-          #    - INSERT
           - type: object
             properties:
               Type:
@@ -76,7 +71,7 @@ $defs:
       - Parameters
     additionalProperties: false
   method:
-    description: A string (in all caps) representing an HTTP method 
+    description: A string (in all caps) representing an HTTP method
     type: string
     enum:
       - GET
@@ -84,12 +79,16 @@ $defs:
       - PUT
       - PATCH
       - DELETE
+
+  #---Tables---#
   table:
     description: NOTYETWRITTEN
     type: object
     properties:
-      Join: 
-        type: join_object
+      Join:
+        description: when you need to join multiple tables together
+        type: object
+        $ref: "#/$defs/join_object"
       Name:
         type: string
         description: The name of the table in the database
@@ -100,6 +99,137 @@ $defs:
         type: boolean
         description: If a function doesn't specify a table, then use this one
     additionalProperties: false
+
+  join_object:
+    description: Not Yet Implemented
+    type: object
+    properties:
+      #if Alias omitted, f'{Left.name}_{Right.name}
+      Alias:
+        type: string
+      Left:
+        description: Column in Left Table
+        oneOf:
+          - type: string
+          - type: object
+            properties:
+              Join:
+                $ref: "#/$defs/join_object"
+            additionalProperties: false
+      Right:
+        description: Column in Right Table
+
+        oneOf:
+          - type: string
+          - type: object
+            properties:
+              Join:
+                $ref: "#/$defs/join_object"
+            additionalProperties: false
+      How:
+        description: | 
+          LEFT|RIGHT|INNER|OUTER
+          Must also have `On` tag 
+        type: string
+        enum: 
+              - LEFT
+              - RIGHT
+              - INNER
+              - OUTER
+      On:
+        oneOf:
+          - $ref: "#/$defs/condition"
+          - $ref: "#/$defs/logical"
+        
+        additionalProperties: false
+    #oneOf:
+    allOf:
+      - required:
+        - Left
+        - Right
+      - anyOf: 
+        - required: 
+          - On
+          - How
+        # If we're missing How, we do an inner join
+        - required:
+          - On
+        # if we're missing On and How, we do a natural join
+        - not:
+            anyOf:
+              - required:
+                - On
+              - required: 
+                - How
+
+    additionalProperties: false
+
+  condition:
+    description: Operation on a pair of numeric value. You can provide the names of columns, or you can use numeric constants
+    type: object
+    properties:
+      LeftColumn: 
+        anyOf: 
+          - type: string
+          - type: integer
+          - type: float
+      RightColumn: 
+        anyOf: 
+          - type: string
+          - type: integer
+          - type: float
+      Compare: 
+        type: string
+        enum: 
+          - lt 
+          - le
+          - eq
+          - ge
+          - gt
+    required:
+      - LeftColumn
+      - RightColumn
+      - Compare
+    additionalProperties: false
+  
+  logical:
+    type: object
+    description: an operation on booleans. And|Or|Not are the options
+    properties:
+      And:
+        $ref: "#/$defs/binarylogical"
+      Or:
+        $ref: "#/$defs/binarylogical"
+      Not:
+        $ref: "#/$defs/unarylogical"
+    not:
+      anyOf:
+        - required:
+          - And
+          - Or
+        - required:
+          - And
+          - Not
+        - required:
+          - Or
+          - Not
+    additionalProperties: false
+
+  binarylogical: 
+    type: array
+    items: 
+      anyOf:
+        - $ref: "#/$defs/condition" 
+        - $ref: "#/$defs/logical"
+    minItems: 2 
+    maxItems: 2 
+
+  unarylogical: 
+    oneOf:
+      - $ref: "#/$defs/condition" 
+      - $ref: "#/$defs/logical"
+
+  #---Parameters---#
   parameter:
     type: object
     description: A parameter from the payload, passed into the query
@@ -109,7 +239,7 @@ $defs:
       Type:
         $ref: "#/$defs/param_type"
       Name:
-        description: A string (in all caps) representing an HTTP method 
+        description: A string (in all caps) representing an HTTP method
         type: string
       Source:
         $ref: "#/$defs/param_source"
@@ -173,7 +303,7 @@ $defs:
             pattern: ^/.*/$
           - $ref: "#/$defs/predefined_string_patterns"
       Length:
-        description: "The lower and upper bounds on the length of the string"
+        description: The lower and upper bounds on the length of the string
         type: object
         properties:
           Lower:
@@ -212,9 +342,9 @@ $defs:
         type: string
     oneOf:
       - required:
-        - PathParam
-      - required: 
-        - QueryStringParam
+          - PathParam
+      - required:
+          - QueryStringParam
     additionalProperties: false
   param_source_payload:
     description: NOTYETWRITTEN
